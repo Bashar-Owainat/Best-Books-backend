@@ -8,51 +8,46 @@ const mongoose = require('mongoose')
 const server = express();
 server.use(cors());
 const PORT = process.env.PORT;
-
+const bookModel = require('./modules/Books')
 
 mongoose.connect('mongodb://localhost:27017/Best-Books');
 
-const bookSchema = new mongoose.Schema({
-    bookName: String,
-    ownername: String,
-    email: String
-});
-
-const bookModel = mongoose.model('book', bookSchema);
 
 function seedBookInfo(){
     const java = new bookModel({
-        bookName: 'java', 
-        ownername: 'bashar',
-        email: 'owainatbashar13@gmail.com'
+        title: 'java', 
+        description:'A book to learn java for beginners',
+        email: 'owainatbashar13@gmail.com', 
+        status: 'available'
     })
     const js = new bookModel({
-        bookName: 'js', 
-        ownername: 'bash',
-        email: 'owainatbashar13@gmail.com'
+        title: 'js', 
+        description: 'A book to learn javascript for begginers',
+        email: 'hermen_the_mongoose@gmail.com',
+        status:'not available'
     })
 
     java.save();
     js.save();
 
 }
-//   seedBookInfo();
+ //  seedBookInfo();
 
 server.get('/', homeHandler);
-server.get('/getBooksHandler', getBooksHandler);
+server.get('/getEmail', getEmail);
 
 
 function homeHandler(req, res) {
     res.send("it's working")
 }
 
-//localhost:3001/getBooksHandler?ownerName=bashar
-function getBooksHandler(req, res){
+//localhost:3001/getEmail?email=owainatbashar13@gmail.com
+function getEmail(req, res){
 
-    let name = req.query.ownerName;
-    console.log(name);
+    let email = req.query.email;
+    console.log(email);
     
-    bookModel.find({ownername:name}, function(error,ownerData) {
+    bookModel.find({email:email}, function(error,ownerData) {
         if(error){
             console.log('error in getting data', error)
         }
