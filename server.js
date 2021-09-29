@@ -37,7 +37,10 @@ function seedBookInfo() {
 server.get('/', homeHandler);
 server.get('/getEmail', getEmail);
 server.post('/addBook', addBookHandler)
-server.delete('/deleteBook', deleteBookHandler)
+server.delete('/deleteBook', deleteBookHandler);
+server.put('/updateCat', updateCatHandler);
+
+
 function homeHandler(req, res) {
     res.send("it's working")
 }
@@ -103,6 +106,30 @@ function deleteBookHandler(req,res ) {
         })
     })
 
+}
+
+
+function updateCatHandler(req, res){
+
+    console.log('UPDATE', req.body)
+
+    let {title, description, email, status } = req.body;
+    bookModel.findByIdAndUpdate(bookID, {title, description, status} , (error, updatedData) =>{
+        if(error){
+            console.log('error in updating', error)
+        }
+        else{
+            console.log('updatedData',updatedData);
+            bookModel.find({email: email}, function (error, bookData){
+                if(error){
+                    console.log('error in getting data', error)
+                }
+                else{
+                    res.send(bookData)
+                }
+            })
+        }
+    })
 }
 
 
